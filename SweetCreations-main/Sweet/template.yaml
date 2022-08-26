@@ -136,7 +136,7 @@ Resources:
         - x86_64
       MemorySize: 128
       Timeout: 120
-      Description: A simple example includes a HTTP get method to get all customers from a Sweet table.
+      Description: HTTP get method to get all customers from a Sweet table.
       Events:
         Api:
           Type: Api
@@ -166,7 +166,7 @@ Resources:
         - x86_64
       MemorySize: 128
       Timeout: 120
-      Description: A simple example includes a HTTP get method to get one order from one customer from a Sweet table.
+      Description: HTTP get method to get one order from one customer from a Sweet table.
       Events:
         Api:
           Type: Api
@@ -196,7 +196,7 @@ Resources:
         - x86_64
       MemorySize: 128
       Timeout: 120
-      Description: A simple example includes a HTTP get method to get one customers shoppingcart from a Sweet table.
+      Description: HTTP get method to get one customers shoppingcart from a Sweet table.
       Events:
         Api:
           Type: Api
@@ -211,53 +211,39 @@ Resources:
           - !Ref "SubnetPublic2"
       Environment:
         Variables:
-          DB_CONNECTIONSTRING: ""
+          DB_CONNECTIONSTRING:
       Policies:
         - AmazonRDSFullAccess
-  # Each Lambda function is defined by properties:
-  # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
 
-  # This is a Lambda function config associated with the source code: get-by-id.js
-  # getByIdFunction:
-  #   Type: AWS::Serverless::Function
-  #   Properties:
-  #     Handler: src/handlers/get-by-id.getByIdHandler
-  #     Runtime: nodejs16.x
-  #     Layers:
-  #       - !Ref "SweetLayer"
-  #     Architectures:
-  #       - x86_64
-  #     MemorySize: 128
-  #     Timeout: 100
-  #     Description: A simple example includes a HTTP get method to get one item by id from a DynamoDB table.
-  #     Events:
-  #       Api:
-  #         Type: Api
-  #         Properties:
-  #           Path: /{id}
-  #           Method: GET
-  # # Each Lambda function is defined by properties:
-  # # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-
-  # # This is a Lambda function config associated with the source code: put-item.js
-  # putItemFunction:
-  #   Type: AWS::Serverless::Function
-  #   Properties:
-  #     Handler: src/handlers/put-item.putItemHandler
-  #     Runtime: nodejs16.x
-  #     Layers:
-  #       - !Ref "SweetLayer"
-  #     Architectures:
-  #       - x86_64
-  #     MemorySize: 128
-  #     Timeout: 100
-  #     Description: A simple example includes a HTTP post method to add one item to a DynamoDB table.
-  #     Events:
-  #       Api:
-  #         Type: Api
-  #         Properties:
-  #           Path: /
-  #           Method: POST
+  listAllProducts:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/listAllProducts.listAllProductsHandler
+      Runtime: nodejs16.x
+      Layers:
+        - !Ref "SweetLayer"
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 120
+      Description: HTTP get method to list all products from a Sweet table.
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /Products
+            Method: GET
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref "SecurityGroup"
+        SubnetIds:
+          - !Ref "SubnetPublic1"
+          - !Ref "SubnetPublic2"
+      Environment:
+        Variables:
+          DB_CONNECTIONSTRING:
+      Policies:
+        - AmazonRDSFullAccess
 
   SweetLayer:
     Type: AWS::Lambda::LayerVersion
