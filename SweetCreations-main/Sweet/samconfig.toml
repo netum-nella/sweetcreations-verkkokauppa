@@ -1,0 +1,12 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "Sweet-stack"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-4cpux8zi4qq7"
+s3_prefix = "Sweet-stack"
+region = "us-east-2"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+image_repositories = []
+disable_rollback = true

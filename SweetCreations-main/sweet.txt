@@ -1,0 +1,15 @@
+//create pipeline
+sam pipeline init --bootstrap
+
+mahdollisia tarkistusjuttuja:
+- Ingress-source prefixlist otettu pois
+- securitygroup ingress-rules
+
+use latest restorable time?
+
+Rollback: Aurora Serverless currently doesn't support IAM Authentication.
+EnableIAMDatabaseAuthentication: true ? - ei supporttia
+Rollback: Aurora Serverless currently doesn't support CloudWatch Log Export.
+EnableCloudwatchLogsExports: - ei supporttia
+
+
