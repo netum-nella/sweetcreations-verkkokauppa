@@ -1,19 +1,10 @@
-# This is the SAM template that represents the architecture of your serverless application
-# https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-template-basics.html
-
-# The AWSTemplateFormatVersion identifies the capabilities of the template
-# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/format-version-structure.html
 AWSTemplateFormatVersion: "2010-09-09"
 Description: >-
   Sweet
 
-# Transform section specifies one or more macros that AWS CloudFormation uses to process your template
-# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/transform-section-structure.html
 Transform:
   - AWS::Serverless-2016-10-31
 
-# Resources declares the AWS resources that you want to include in the stack
-# https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html
 Resources:
   SweetVPC:
     Type: AWS::EC2::VPC
@@ -133,24 +124,24 @@ Resources:
         ExcludePunctuation: true
       Name: sweetsecret
 
-  # This is a Lambda function config associated with the source code: get-all-items.js
-  getAllItemsFunction:
+  # This is a Lambda function config associated with the source code: get-all-customers.js. It is connected to the SweetVPC and has a IAM-policy that allows all access to RDS
+  getAllCustomersFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: src/handlers/get-all-items.getAllItemsHandler
+      Handler: src/handlers/get-all-customers.getAllCustomersHandler
       Runtime: nodejs16.x
       Layers:
         - !Ref "SweetLayer"
       Architectures:
         - x86_64
       MemorySize: 128
-      Timeout: 100
-      Description: A simple example includes a HTTP get method to get all items from a DynamoDB table.
+      Timeout: 120
+      Description: A simple example includes a HTTP get method to get all customers from a Sweet table.
       Events:
         Api:
           Type: Api
           Properties:
-            Path: /
+            Path: /Customer
             Method: GET
       VpcConfig:
         SecurityGroupIds:
@@ -158,50 +149,115 @@ Resources:
         SubnetIds:
           - !Ref "SubnetPublic1"
           - !Ref "SubnetPublic2"
+      Environment:
+        Variables:
+          DB_CONNECTIONSTRING:
+      Policies:
+        - AmazonRDSFullAccess
+
+  oneCustomerOneOrder:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/oneCustomerOneOrder.oneCustomerOneOrderHandler
+      Runtime: nodejs16.x
+      Layers:
+        - !Ref "SweetLayer"
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 120
+      Description: A simple example includes a HTTP get method to get one order from one customer from a Sweet table.
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /Order/{id}
+            Method: GET
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref "SecurityGroup"
+        SubnetIds:
+          - !Ref "SubnetPublic1"
+          - !Ref "SubnetPublic2"
+      Environment:
+        Variables:
+          DB_CONNECTIONSTRING:
+      Policies:
+        - AmazonRDSFullAccess
+
+  oneCustomerShoppingcart:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/oneCustomerShoppingcart.oneCustomerShoppingcartHandler
+      Runtime: nodejs16.x
+      Layers:
+        - !Ref "SweetLayer"
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 120
+      Description: A simple example includes a HTTP get method to get one customers shoppingcart from a Sweet table.
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /Shoppingcart/{id}
+            Method: GET
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref "SecurityGroup"
+        SubnetIds:
+          - !Ref "SubnetPublic1"
+          - !Ref "SubnetPublic2"
+      Environment:
+        Variables:
+          DB_CONNECTIONSTRING: ""
+      Policies:
+        - AmazonRDSFullAccess
   # Each Lambda function is defined by properties:
   # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
 
   # This is a Lambda function config associated with the source code: get-by-id.js
-  getByIdFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: src/handlers/get-by-id.getByIdHandler
-      Runtime: nodejs16.x
-      Layers:
-        - !Ref "SweetLayer"
-      Architectures:
-        - x86_64
-      MemorySize: 128
-      Timeout: 100
-      Description: A simple example includes a HTTP get method to get one item by id from a DynamoDB table.
-      Events:
-        Api:
-          Type: Api
-          Properties:
-            Path: /{id}
-            Method: GET
-  # Each Lambda function is defined by properties:
-  # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+  # getByIdFunction:
+  #   Type: AWS::Serverless::Function
+  #   Properties:
+  #     Handler: src/handlers/get-by-id.getByIdHandler
+  #     Runtime: nodejs16.x
+  #     Layers:
+  #       - !Ref "SweetLayer"
+  #     Architectures:
+  #       - x86_64
+  #     MemorySize: 128
+  #     Timeout: 100
+  #     Description: A simple example includes a HTTP get method to get one item by id from a DynamoDB table.
+  #     Events:
+  #       Api:
+  #         Type: Api
+  #         Properties:
+  #           Path: /{id}
+  #           Method: GET
+  # # Each Lambda function is defined by properties:
+  # # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
 
-  # This is a Lambda function config associated with the source code: put-item.js
-  putItemFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: src/handlers/put-item.putItemHandler
-      Runtime: nodejs16.x
-      Layers:
-        - !Ref "SweetLayer"
-      Architectures:
-        - x86_64
-      MemorySize: 128
-      Timeout: 100
-      Description: A simple example includes a HTTP post method to add one item to a DynamoDB table.
-      Events:
-        Api:
-          Type: Api
-          Properties:
-            Path: /
-            Method: POST
+  # # This is a Lambda function config associated with the source code: put-item.js
+  # putItemFunction:
+  #   Type: AWS::Serverless::Function
+  #   Properties:
+  #     Handler: src/handlers/put-item.putItemHandler
+  #     Runtime: nodejs16.x
+  #     Layers:
+  #       - !Ref "SweetLayer"
+  #     Architectures:
+  #       - x86_64
+  #     MemorySize: 128
+  #     Timeout: 100
+  #     Description: A simple example includes a HTTP post method to add one item to a DynamoDB table.
+  #     Events:
+  #       Api:
+  #         Type: Api
+  #         Properties:
+  #           Path: /
+  #           Method: POST
 
   SweetLayer:
     Type: AWS::Lambda::LayerVersion
@@ -210,7 +266,7 @@ Resources:
       Description: "Lambda layer with nodejs package files"
       Content:
         S3Bucket: sweet-layer-bucket
-        S3Key: node.zip
+        S3Key: nodejs.zip
       CompatibleRuntimes:
         - nodejs16.x
   # Simple syntax to create a DynamoDB table with a single attribute primary key, more in
