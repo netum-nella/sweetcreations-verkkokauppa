@@ -11,13 +11,13 @@ const Products = () => {
   const {addToCart, items} = useCart()
   const {addToFavorite, favoriteItems} = useFavorite()
 
-  const { productList, loading, setProductID, setCategory } = useProduct();
+  const { productList, loading, setProductID/*, setCategory*/ } = useProduct();
   
   const {category_id} = useParams()
 
-  useEffect(() => {
-    setCategory(category_id)
-  }, [category_id])
+  // useEffect(() => {
+  //   setCategory(category_id)
+  // }, [category_id])
 
   return (
     <div className={styles.cardGroup}>
