@@ -6,11 +6,9 @@ const pool = new Pool({ connectionString: process.env.DB_CONNECTIONSTRING });
 
 exports.oneProduct = async (event, context) => {
   const id = parseInt(event.pathParameters.id);
-
   const client = await pool.connect();
-
   const res = await client.query(
-    "SELECT product FROM product WHERE product_id = $1",
+    "SELECT * FROM product WHERE product_id = $1",
     [id]
   );
 
