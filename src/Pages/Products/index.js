@@ -8,12 +8,12 @@ import { useFavorite } from "../../Context/FavoriteContext";
 import Card from "../../Components/Card";
 
 const Products = () => {
-  const { addToCart, items } = useCart();
-  const { addToFavorite, favoriteItems } = useFavorite();
+  const { addToCart, product } = useCart();
+  const { addToFavorite, favoriteproducts } = useFavorite();
 
   const { productList, loading, setProductID /*, setCategory*/ } = useProduct();
 
-  const { category_id } = useParams();
+  // const {category_id} = useParams()
 
   // useEffect(() => {
   //   setCategory(category_id)
@@ -22,22 +22,15 @@ const Products = () => {
   return (
     <div className={styles.cardGroup}>
       {!loading ? (
-        productList?.map((item, index) => {
-          const findCartItem = items.find(
-            (cart_item) => cart_item.id === item.id
-          );
-          const findFavoriteItem = favoriteItems.find(
-            (favorite_item) => favorite_item.id === item.id
-          );
+        productList?.map((product, index) => {
+          // const findCartItem = product.find((cartitem) => cartitem.cartitem_id === product.product_id)
+          // const findFavoriteItem = favoriteproducts.find((favorite_item) => favorite_item.id === product.product_id)
           return (
             <Card
               key={`product-${index}`}
-              item={item}
+              product={product}
               setProductID={setProductID}
-              findCartItem={findCartItem}
-              findFavoriteItem={findFavoriteItem}
               addToCart={addToCart}
-              addToFavorite={addToFavorite}
             />
           );
         })

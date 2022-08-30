@@ -6,8 +6,9 @@ export const ProductProvider = ({ children }) => {
   const [productList, setProductList] = useState([]);
   // const [categories, setCategories] = useState()
   // const [category, setCategory] = useState("/products")
+
   const [productID, setProductID] = useState("");
-  const [products, setProduct] = useState({});
+  const [product, setProduct] = useState({});
   const [loading, setLoading] = useState(false);
 
   // useEffect(() => {
@@ -44,29 +45,30 @@ export const ProductProvider = ({ children }) => {
         )
         .then((res) => {
           setProductList(res.data);
+          console.log(res.data);
           setLoading(false);
         });
     };
     getProductData();
-  }, [products]);
+  }, [product]);
 
   useEffect(() => {
     setLoading(true);
     const getProductDetail = async () => {
-      productID &&
-        productID.length > 0 &&
-        (await axios
-          .get(`https://fakestoreapi.com/products/${productID}`)
-          .then((res) => {
-            setProduct(res.data);
-            setLoading(false);
-          }));
+      await axios
+        .get(
+          `https://wo46x71x9h.execute-api.us-east-2.amazonaws.com/Prod/Products/${productID}`
+        )
+        .then((res) => {
+          setProduct(res.data);
+          setLoading(false);
+        });
     };
     getProductDetail();
   }, [productID]);
 
   const values = {
-    products,
+    product,
     productList,
     productID,
     setProductID,
