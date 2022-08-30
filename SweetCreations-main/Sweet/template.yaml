@@ -159,7 +159,7 @@ Resources:
           - !Ref "SubnetPublic2"
       Environment:
         Variables:
-          DB_CONNECTIONSTRING: SweetAuroraDB://Sweet:Sweetsweet@sweetauroracluster.cluster-cvwrjmcnfq8y.us-east-2.rds.amazonaws.com:5432/SweetCreationsDB
+          DB_CONNECTIONSTRING:
       Policies:
         - AmazonRDSFullAccess
 
@@ -189,7 +189,7 @@ Resources:
           - !Ref "SubnetPublic2"
       Environment:
         Variables:
-          DB_CONNECTIONSTRING: SweetAuroraDB://Sweet:Sweetsweet@sweetauroracluster.cluster-cvwrjmcnfq8y.us-east-2.rds.amazonaws.com:5432/SweetCreationsDB
+          DB_CONNECTIONSTRING:
       Policies:
         - AmazonRDSFullAccess
 
@@ -219,7 +219,7 @@ Resources:
           - !Ref "SubnetPublic2"
       Environment:
         Variables:
-          DB_CONNECTIONSTRING: SweetAuroraDB://Sweet:Sweetsweet@sweetauroracluster.cluster-cvwrjmcnfq8y.us-east-2.rds.amazonaws.com:5432/SweetCreationsDB
+          DB_CONNECTIONSTRING:
       Policies:
         - AmazonRDSFullAccess
 
@@ -250,7 +250,7 @@ Resources:
           - !Ref "SubnetPublic2"
       Environment:
         Variables:
-          DB_CONNECTIONSTRING: SweetAuroraDB://Sweet:Sweetsweet@sweetauroracluster.cluster-cvwrjmcnfq8y.us-east-2.rds.amazonaws.com:5432/SweetCreationsDB
+          DB_CONNECTIONSTRING:
 
       Policies:
         - AmazonRDSFullAccess
