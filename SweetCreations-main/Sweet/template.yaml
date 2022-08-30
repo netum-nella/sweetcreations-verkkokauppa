@@ -1,0 +1,272 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >-
+  Sweet
+
+Transform:
+  - AWS::Serverless-2016-10-31
+
+Globals:
+  Api:
+    Cors:
+      AllowMethods: "'GET,HEAD,OPTIONS,POST,PUT'"
+      AllowHeaders: "'Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers'"
+      AllowOrigin: "'http://sweety-bucket.s3-website.us-east-2.amazonaws.com'"
+
+Resources:
+  SweetVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: SweetVPC
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    DependsOn: SweetVPC
+    Properties:
+      Tags:
+        - Key: Name
+          Value: SweetGateway
+
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    DependsOn: InternetGateway
+    Properties:
+      VpcId: !Ref SweetVPC
+      InternetGatewayId: !Ref InternetGateway
+
+  SubnetPublic1:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      AvailabilityZone: us-east-2a
+      MapPublicIpOnLaunch: true
+      VpcId: !Ref "SweetVPC"
+      CidrBlock: "10.0.1.0/24"
+      Tags:
+        - Key: Name
+          Value: SweetPublic1
+
+  SubnetPublic2:
+    Type: "AWS::EC2::Subnet"
+    Properties:
+      AvailabilityZone: us-east-2b
+      MapPublicIpOnLaunch: true
+      VpcId: !Ref "SweetVPC"
+      CidrBlock: "10.0.2.0/24"
+      Tags:
+        - Key: Name
+          Value: SweetPublic2
+
+  RouteTablePub:
+    Type: "AWS::EC2::RouteTable"
+    Properties:
+      VpcId: !Ref "SweetVPC"
+      Tags:
+        - Key: Name
+          Value: SweetPublicRouteTable
+
+  PublicRoute1:
+    Type: AWS::EC2::Route
+    DependsOn: AttachGateway
+    Properties:
+      RouteTableId: !Ref RouteTablePub
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  RouteTableAssociation1:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref RouteTablePub
+      SubnetId: !Ref SubnetPublic1
+
+  RouteTableAssociation2:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      RouteTableId: !Ref RouteTablePub
+      SubnetId: !Ref SubnetPublic2
+
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Sweet access"
+      GroupName: SweetSecurityGroup
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: "0.0.0.0/0"
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: "0.0.0.0/0"
+        - IpProtocol: tcp
+          FromPort: 5432
+          ToPort: 5432
+          CidrIp: "0.0.0.0/0"
+      SecurityGroupEgress:
+        - IpProtocol: "-1"
+          CidrIp: "0.0.0.0/0"
+      VpcId: !Ref "SweetVPC"
+
+  DBSubnetGroup:
+    Type: "AWS::RDS::DBSubnetGroup"
+    Properties:
+      DBSubnetGroupName: "subnetgroup"
+      DBSubnetGroupDescription: "Subnet Group for AuroraDB"
+      SubnetIds:
+        - !Ref "SubnetPublic1"
+        - !Ref "SubnetPublic2"
+
+  SweetSecret:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Description: Credentials for the AuroraDB
+      GenerateSecretString:
+        SecretStringTemplate: '{"username": "Sweet"}'
+        GenerateStringKey: password
+        PasswordLength: 32
+        ExcludePunctuation: true
+      Name: sweetsecret
+
+    # This is a Lambda function config associated with the source code: get-all-customers.js. It is connected to the SweetVPC and has a IAM-policy that allows all access to RDS
+  getAllCustomersFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/get-all-customers.getAllCustomersHandler
+      Runtime: nodejs16.x
+      Layers:
+        - !Ref "SweetLayer"
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 120
+      Description: HTTP get method to get all customers from a Sweet table.
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /Customer
+            Method: GET
+
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref "SecurityGroup"
+        SubnetIds:
+          - !Ref "SubnetPublic1"
+          - !Ref "SubnetPublic2"
+      Environment:
+        Variables:
+          DB_CONNECTIONSTRING:
+      Policies:
+        - AmazonRDSFullAccess
+
+  oneCustomerOneOrder:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/oneCustomerOneOrder.oneCustomerOneOrderHandler
+      Runtime: nodejs16.x
+      Layers:
+        - !Ref "SweetLayer"
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 120
+      Description: HTTP get method to get one order from one customer from a Sweet table.
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /Order/{id}
+            Method: GET
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref "SecurityGroup"
+        SubnetIds:
+          - !Ref "SubnetPublic1"
+          - !Ref "SubnetPublic2"
+      Environment:
+        Variables:
+          DB_CONNECTIONSTRING:
+      Policies:
+        - AmazonRDSFullAccess
+
+  oneCustomerShoppingcart:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/oneCustomerShoppingcart.oneCustomerShoppingcartHandler
+      Runtime: nodejs16.x
+      Layers:
+        - !Ref "SweetLayer"
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 120
+      Description: HTTP get method to get one customers shoppingcart from a Sweet table.
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /Shoppingcart/{id}
+            Method: GET
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref "SecurityGroup"
+        SubnetIds:
+          - !Ref "SubnetPublic1"
+          - !Ref "SubnetPublic2"
+      Environment:
+        Variables:
+          DB_CONNECTIONSTRING:
+      Policies:
+        - AmazonRDSFullAccess
+
+  listAllProducts:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/listAllProducts.listAllProductsHandler
+      Runtime: nodejs16.x
+      Layers:
+        - !Ref "SweetLayer"
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 120
+      Description: HTTP get method to list all products from a Sweet table.
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /Products
+            Method: GET
+
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref "SecurityGroup"
+        SubnetIds:
+          - !Ref "SubnetPublic1"
+          - !Ref "SubnetPublic2"
+      Environment:
+        Variables:
+          DB_CONNECTIONSTRING:
+
+      Policies:
+        - AmazonRDSFullAccess
+
+  SweetLayer:
+    Type: AWS::Lambda::LayerVersion
+    Properties:
+      LayerName: Sweet-layer-nodejs
+      Description: "Lambda layer with nodejs package files"
+      Content:
+        S3Bucket: sweet-layer-bucket
+        S3Key: nodejs.zip
+      CompatibleRuntimes:
+        - nodejs16.x
+
+Outputs:
+  WebEndpoint:
+    Description: "API Gateway endpoint URL for Prod stage"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
