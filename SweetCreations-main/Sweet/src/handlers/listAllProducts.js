@@ -10,6 +10,13 @@ exports.listAllProductsHandler = async function customers() {
 
   const response = {
     statusCode: 200,
+    headers: {
+      "Access-Control-Allow-Origin":
+        "http://sweety-bucket.s3-website.us-east-2.amazonaws.com", // replace with hostname of frontend (CloudFront)
+      "Access-Control-Allow-Headers":
+        "Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers",
+      "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS, POST, PUT",
+    },
     body: JSON.stringify(res.rows),
   };
 

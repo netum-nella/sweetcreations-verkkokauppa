@@ -5,6 +5,13 @@ Description: >-
 Transform:
   - AWS::Serverless-2016-10-31
 
+Globals:
+  Api:
+    Cors:
+      AllowMethods: "'GET,HEAD,OPTIONS,POST,PUT'"
+      AllowHeaders: "'Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers'"
+      AllowOrigin: "'http://sweety-bucket.s3-website.us-east-2.amazonaws.com'"
+
 Resources:
   SweetVPC:
     Type: AWS::EC2::VPC
@@ -124,7 +131,7 @@ Resources:
         ExcludePunctuation: true
       Name: sweetsecret
 
-  # This is a Lambda function config associated with the source code: get-all-customers.js. It is connected to the SweetVPC and has a IAM-policy that allows all access to RDS
+    # This is a Lambda function config associated with the source code: get-all-customers.js. It is connected to the SweetVPC and has a IAM-policy that allows all access to RDS
   getAllCustomersFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -143,6 +150,7 @@ Resources:
           Properties:
             Path: /Customer
             Method: GET
+
       VpcConfig:
         SecurityGroupIds:
           - !Ref "SecurityGroup"
@@ -233,6 +241,7 @@ Resources:
           Properties:
             Path: /Products
             Method: GET
+
       VpcConfig:
         SecurityGroupIds:
           - !Ref "SecurityGroup"
@@ -242,6 +251,7 @@ Resources:
       Environment:
         Variables:
           DB_CONNECTIONSTRING:
+
       Policies:
         - AmazonRDSFullAccess
 
@@ -255,8 +265,6 @@ Resources:
         S3Key: nodejs.zip
       CompatibleRuntimes:
         - nodejs16.x
-  # Simple syntax to create a DynamoDB table with a single attribute primary key, more in
-  # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlesssimpletable
 
 Outputs:
   WebEndpoint:
