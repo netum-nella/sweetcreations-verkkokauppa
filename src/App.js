@@ -21,7 +21,11 @@ function App() {
         <Routes>
           <Route path="/" exact element={<Products />} />
           <Route path="/:category_id" element={<Products />} />
+<<<<<<< HEAD
           <Route path="/product/:product_id" element={<ProductDetail />} />
+=======
+          <Route path="/Products/:product_id" element={<ProductDetail />} />
+>>>>>>> 696c3b133423ec66b332a412058184560c0cf582
           <Route path="/cart" element={<Cart />} />
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/signin" element={<Signin />} />

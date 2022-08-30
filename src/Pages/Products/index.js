@@ -11,6 +11,7 @@ const Products = () => {
   const {addToCart, items} = useCart()
   const {addToFavorite, favoriteItems} = useFavorite()
 
+<<<<<<< HEAD
   const { productList, loading, setProductID, setCategory } = useProduct();
   
   const {category_id} = useParams()
@@ -18,6 +19,15 @@ const Products = () => {
   useEffect(() => {
     setCategory(category_id)
   }, [category_id])
+=======
+  const { productList, loading, setProductID/*, setCategory*/ } = useProduct();
+  
+  const {category_id} = useParams()
+
+  // useEffect(() => {
+  //   setCategory(category_id)
+  // }, [category_id])
+>>>>>>> 696c3b133423ec66b332a412058184560c0cf582
 
   return (
     <div className={styles.cardGroup}>
