@@ -34,8 +34,8 @@ export const ProductProvider = ({ children }) => {
           `https://wo46x71x9h.execute-api.us-east-2.amazonaws.com/Prod/Products`, {
             headers: {
               'Access-Control-Allow-Origin': "http://sweety-bucket.s3-website.us-east-2.amazonaws.com",
-              'Access-Control-Allow-Headers': 'application/json',
-              'Access-Control-Allow-Methods': 'GET, OPTIONS',
+              'Access-Control-Allow-Headers': "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers",
+              'Access-Control-Allow-Methods': 'GET,HEAD,OPTIONS,POST,PUT',
             }
           }
         ).then((res) => {
