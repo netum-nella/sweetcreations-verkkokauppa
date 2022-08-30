@@ -23,6 +23,7 @@ function App() {
           <Route path="/:category_id" element={<Products />} />
 
           <Route path="/Products/:product_id" element={<ProductDetail />} />
+
           <Route path="/cart" element={<Cart />} />
           <Route path="/favorites" element={<Favorites />} />
           <Route path="/signin" element={<Signin />} />
