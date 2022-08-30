@@ -159,7 +159,7 @@ Resources:
           - !Ref "SubnetPublic2"
       Environment:
         Variables:
-          DB_CONNECTIONSTRING:
+          DB_CONNECTIONSTRING: SweetAuroraDB://Sweet:Sweetsweet@sweetauroracluster.cluster-cvwrjmcnfq8y.us-east-2.rds.amazonaws.com:5432/SweetCreationsDB
       Policies:
         - AmazonRDSFullAccess
 
@@ -189,7 +189,7 @@ Resources:
           - !Ref "SubnetPublic2"
       Environment:
         Variables:
-          DB_CONNECTIONSTRING:
+          DB_CONNECTIONSTRING: SweetAuroraDB://Sweet:Sweetsweet@sweetauroracluster.cluster-cvwrjmcnfq8y.us-east-2.rds.amazonaws.com:5432/SweetCreationsDB
       Policies:
         - AmazonRDSFullAccess
 
@@ -219,7 +219,7 @@ Resources:
           - !Ref "SubnetPublic2"
       Environment:
         Variables:
-          DB_CONNECTIONSTRING:
+          DB_CONNECTIONSTRING: SweetAuroraDB://Sweet:Sweetsweet@sweetauroracluster.cluster-cvwrjmcnfq8y.us-east-2.rds.amazonaws.com:5432/SweetCreationsDB
       Policies:
         - AmazonRDSFullAccess
 
@@ -250,7 +250,39 @@ Resources:
           - !Ref "SubnetPublic2"
       Environment:
         Variables:
-          DB_CONNECTIONSTRING:
+          DB_CONNECTIONSTRING: SweetAuroraDB://Sweet:Sweetsweet@sweetauroracluster.cluster-cvwrjmcnfq8y.us-east-2.rds.amazonaws.com:5432/SweetCreationsDB
+
+      Policies:
+        - AmazonRDSFullAccess
+
+    oneProduct:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/oneProduct.oneProduct
+      Runtime: nodejs16.x
+      Layers:
+        - !Ref "SweetLayer"
+      Architectures:
+        - x86_64
+      MemorySize: 128
+      Timeout: 120
+      Description: HTTP get method to list all products from a Sweet table.
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /Product
+            Method: GET
+
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref "SecurityGroup"
+        SubnetIds:
+          - !Ref "SubnetPublic1"
+          - !Ref "SubnetPublic2"
+      Environment:
+        Variables:
+          DB_CONNECTIONSTRING: SweetAuroraDB://Sweet:Sweetsweet@sweetauroracluster.cluster-cvwrjmcnfq8y.us-east-2.rds.amazonaws.com:5432/SweetCreationsDB
 
       Policies:
         - AmazonRDSFullAccess
