@@ -36,8 +36,9 @@ export const ProductProvider = ({ children }) => {
             headers: {
               "Access-Control-Allow-Origin":
                 "http://sweety-bucket.s3-website.us-east-2.amazonaws.com",
-              "Access-Control-Allow-Headers": "application/json",
-              "Access-Control-Allow-Methods": "GET, OPTIONS",
+              "Access-Control-Allow-Headers":
+                "Access-Control-Allow-Headers, Origin,Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers",
+              "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
             },
           }
         )
