@@ -5,6 +5,16 @@ Description: >-
 Transform:
   - AWS::Serverless-2016-10-31
 
+# Parameters:
+#   GithubRepository:
+#     Type: String
+#     Description: "Sweet repository: https://github.com/nellarosaliina/frontend-fullstack.git"
+#     Default: "https://github.com/nellarosaliina/frontend-fullstack.git"
+#   Stage:
+#     Type: String
+#     Description: Deployment stage
+#     Default: "Prod"
+
 Globals:
   Api:
     Cors:
@@ -131,38 +141,6 @@ Resources:
         ExcludePunctuation: true
       Name: sweetsecret
 
-    # This is a Lambda function config associated with the source code: get-all-customers.js. It is connected to the SweetVPC and has a IAM-policy that allows all access to RDS
-  getAllCustomersFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: src/handlers/get-all-customers.getAllCustomersHandler
-      Runtime: nodejs16.x
-      Layers:
-        - !Ref "SweetLayer"
-      Architectures:
-        - x86_64
-      MemorySize: 128
-      Timeout: 120
-      Description: HTTP get method to get all customers from a Sweet table.
-      Events:
-        Api:
-          Type: Api
-          Properties:
-            Path: /Customer
-            Method: GET
-
-      VpcConfig:
-        SecurityGroupIds:
-          - !Ref "SecurityGroup"
-        SubnetIds:
-          - !Ref "SubnetPublic1"
-          - !Ref "SubnetPublic2"
-      Environment:
-        Variables:
-          DB_CONNECTIONSTRING: SweetAuroraDB://Sweet:Sweetsweet@sweetauroracluster.cluster-cvwrjmcnfq8y.us-east-2.rds.amazonaws.com:5432/SweetCreationsDB
-      Policies:
-        - AmazonRDSFullAccess
-
   oneCustomerOneOrder:
     Type: AWS::Serverless::Function
     Properties:
@@ -189,7 +167,8 @@ Resources:
           - !Ref "SubnetPublic2"
       Environment:
         Variables:
-          DB_CONNECTIONSTRING: SweetAuroraDB://Sweet:Sweetsweet@sweetauroracluster.cluster-cvwrjmcnfq8y.us-east-2.rds.amazonaws.com:5432/SweetCreationsDB
+          DB_CONNECTIONSTRING: "{{resolve:secretsmanager:SweetConnectionstring:SecretString:SweetAuroraDB}}"
+
       Policies:
         - AmazonRDSFullAccess
 
@@ -219,7 +198,7 @@ Resources:
           - !Ref "SubnetPublic2"
       Environment:
         Variables:
-          DB_CONNECTIONSTRING: SweetAuroraDB://Sweet:Sweetsweet@sweetauroracluster.cluster-cvwrjmcnfq8y.us-east-2.rds.amazonaws.com:5432/SweetCreationsDB
+          DB_CONNECTIONSTRING: "{{resolve:secretsmanager:SweetConnectionstring:SecretString:SweetAuroraDB}}"
       Policies:
         - AmazonRDSFullAccess
 
@@ -250,7 +229,7 @@ Resources:
           - !Ref "SubnetPublic2"
       Environment:
         Variables:
-          DB_CONNECTIONSTRING: SweetAuroraDB://Sweet:Sweetsweet@sweetauroracluster.cluster-cvwrjmcnfq8y.us-east-2.rds.amazonaws.com:5432/SweetCreationsDB
+          DB_CONNECTIONSTRING: "{{resolve:secretsmanager:SweetConnectionstring:SecretString:SweetAuroraDB}}"
 
       Policies:
         - AmazonRDSFullAccess
@@ -282,7 +261,7 @@ Resources:
           - !Ref "SubnetPublic2"
       Environment:
         Variables:
-          DB_CONNECTIONSTRING: SweetAuroraDB://Sweet:Sweetsweet@sweetauroracluster.cluster-cvwrjmcnfq8y.us-east-2.rds.amazonaws.com:5432/SweetCreationsDB
+          DB_CONNECTIONSTRING: "{{resolve:secretsmanager:SweetConnectionstring:SecretString:SweetAuroraDB}}"
 
       Policies:
         - AmazonRDSFullAccess
@@ -297,6 +276,47 @@ Resources:
         S3Key: nodejs.zip
       CompatibleRuntimes:
         - nodejs16.x
+
+  # AmplifyApp:
+  #
+  #   Type: AWS::Amplify::App
+  #   Properties:
+  #     Name: sweet-amplify-sam-app
+  #     Repository: !Ref GithubRepository
+  #     AccessToken: "{{resolve:secretsmanager:github-token1}}"
+  #     IAMServiceRole: !GetAtt AmplifyRole.Arn
+  #     EnvironmentVariables:
+  #       - Name: ENDPOINT
+  #         Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+  #         # API GateWay Endpoint, CHECK IF ERRORS!
+
+  # AmplifyBranch:
+  #   Type: AWS::Amplify::Branch
+  #   Properties:
+  #     BranchName: "main"
+  #     AppId: !GetAtt AmplifyApp.AppId
+  #     EnableAutoBuild: true
+
+  # AmplifyRole:
+  #   Type: AWS::IAM::Role
+  #   Properties:
+  #     AssumeRolePolicyDocument:
+  #       Version: 2012-10-17
+  #       Statement:
+  #         - Effect: Allow
+  #           Principal:
+  #             Service:
+  #               - amplify.amazonaws.com
+  #           Action:
+  #             - sts:AssumeRole
+  #     Policies:
+  #       - PolicyName: Amplify
+  #         PolicyDocument:
+  #           Version: 2012-10-17
+  #           Statement:
+  #             - Effect: Allow
+  #               Action: "amplify:*"
+  #               Resource: "*"
 
 Outputs:
   WebEndpoint:

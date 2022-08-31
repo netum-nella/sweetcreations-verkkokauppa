@@ -1,3 +1,4 @@
+//Lambda ok
 const dotenv = require("dotenv").config();
 
 const { Pool } = require("pg");
