@@ -1,6 +1,7 @@
 import styles from './styles.module.css'
 import { StarIcon, ShoppingCartIcon, HeartIcon } from '@heroicons/react/solid'
 import { Link } from 'react-router-dom'
+// import pumpkinspice from './images/pumpkinspice.jpg';
 
 const Card = ({
   product,
@@ -25,8 +26,16 @@ const Card = ({
         </button> */}
         <Link to={`/Product/${product.product_id}`}>
           <div className={styles.cardHeader}>
-            {/* <img className={styles.cardImg} src={product.image} alt="" /> */}
+            <img className={styles.cardImg} src={product.image} alt="" />
           </div>
+          {/* <div class="panel-body">
+              <img
+                src={pumpkinspice}
+                alt="kuvan nimi"
+                style="width: 100px; height: 100px"
+              />
+            </div>
+            <div class="panel-footer"></div> */}
         </Link>
         <div className={styles.cardBody}>
           <div>
@@ -70,7 +79,7 @@ const Card = ({
             </div>
           </div>
           <div className={styles.addToCart}>
-            {/* <button
+            <button
               className={
                 !findCartItem ? styles.addToCartButton : styles.removeButton
               }
@@ -85,7 +94,7 @@ const Card = ({
                   {findCartItem ? "Remove from cart" : "Add to Cart"}
                 </span>
               </div>
-            </button> */}
+            </button>
           </div>
         </div>
       </div>
