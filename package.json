@@ -1,0 +1,21 @@
+{
+  "name": "lambdatest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "getAllCustomer.js",
+  "scripts": {
+    "test": "jest --ForceExit"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.1204.0",
+    "dotenv": "^16.0.1",
+    "pg": "^8.8.0"
+  },
+  "devDependencies": {
+    "jest": "^29.0.1",
+    "lambda-tester": "^4.0.1"
+  }
+}
