@@ -14,7 +14,7 @@ import Favorites from "./Pages/Favorites";
 function App() {
   return (
     <div className="App">
-      <h1> Sweet Creations </h1>
+      <title><b> Sweet Creations </b></title>
       <header className="App-header"></header>
       <Navbar />
       <Container>

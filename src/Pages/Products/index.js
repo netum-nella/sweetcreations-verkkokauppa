@@ -24,8 +24,8 @@ const Products = () => {
   return (
     <div className={styles.cardGroup}>
       {!loading ? (
-        productList?.map((item, index) => {
-          const findCartItem = items.find((cart_item) => cart_item.id === item.id)
+        productList?.map((product, index) => {
+          // const findCartItem = item.find((cart_item) => cart_item.id === item.id)
           // const findFavoriteItem = favoriteproducts.find((favorite_item) => favorite_item.id === product.product_id)
           return (
 
