@@ -11,11 +11,15 @@ import ProductDetail from "./Pages/ProductDetail";
 import Cart from "./Pages/Cart";
 import Favorites from "./Pages/Favorites";
 
+// const BannerPic = new URL ("./images/banner.png",import.meta.url)
+
 function App() {
   return (
     <div className="App">
-      <title><b> Sweet Creations </b></title>
+      <h1> Sweet Creations </h1>
+      {/* <img> src={BannerPic}</img> */}
       <header className="App-header"></header>
+      <b> @S W E E T C R E A T I O N S C O M </b>
       <Navbar />
       <Container>
         <Routes>

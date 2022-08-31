@@ -16,15 +16,15 @@
   shadow-zinc-900/10
   px-4
   py-2 
-  bg-gradient-to-l from-blue-500 via-blue-600 to-blue-500
+  bg-gradient-to-l from-pink-500 via-pink-600 to-pink-500
   text-sm 
   font-medium 
   text-white
   hover:bg-gradient-to-r 
-  hover:from-blue-500
-  hover:via-blue-700
-  hover:to-blue-500
-  hover:shadow-blue-700
+  hover:from-pink-500
+  hover:via-pink-700
+  hover:to-pink-500
+  hover:shadow-pink-700
   hover:shadow-inner
   mt-4
 }
