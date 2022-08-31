@@ -1,6 +1,6 @@
-import styles from './styles.module.css'
-import { StarIcon, ShoppingCartIcon, HeartIcon } from '@heroicons/react/solid'
-import { Link } from 'react-router-dom'
+import styles from "./styles.module.css";
+import { StarIcon, ShoppingCartIcon, HeartIcon } from "@heroicons/react/solid";
+import { Link } from "react-router-dom";
 
 const Card = ({
   product,
@@ -9,9 +9,12 @@ const Card = ({
   addToCart,
   findCartItem,
 }) => {
-
   return (
-    <div key={`${product.product_id}-product`} className={styles.card} title={product.product_name}>
+    <div
+      key={`${product.product_id}-product`}
+      className={styles.card}
+      title={product.product_name}
+    >
       <div className={styles.cardLink}>
         {/* <button
           className={
@@ -25,13 +28,13 @@ const Card = ({
         </button> */}
         <Link to={`/Product/${product.product_id}`}>
           <div className={styles.cardHeader}>
-            {/* <img className={styles.cardImg} src={product.image} alt="" /> */}
+            <img className={styles.cardImg} src={product.image} alt="" />
           </div>
         </Link>
         <div className={styles.cardBody}>
           <div>
             <p className={styles.cardTitle} title={product.product_name}>
-              <span className={styles.brand} title="Brand">
+              <span className={styles.brand} title=" ">
                 Brand,
               </span>{" "}
               {product.product_name}
@@ -59,10 +62,15 @@ const Card = ({
           <div>
             <div className="my-auto" title={`$${product.product_price}`}>
               <span className={styles.priceSub}>$</span>
-              <span className={styles.priceTop}>{Math.trunc(product.product_price)}</span>
-              {parseInt((product.product_price % 1).toFixed(2).substring(2)) !== 0 ? (
+              <span className={styles.priceTop}>
+                {Math.trunc(product.product_price)}
+              </span>
+              {parseInt((product.product_price % 1).toFixed(2).substring(2)) !==
+              0 ? (
                 <span className={styles.priceSub}>
-                  {parseInt((product.product_price % 1).toFixed(2).substring(2))}
+                  {parseInt(
+                    (product.product_price % 1).toFixed(2).substring(2)
+                  )}
                 </span>
               ) : (
                 ""
@@ -90,7 +98,7 @@ const Card = ({
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Card
+export default Card;
