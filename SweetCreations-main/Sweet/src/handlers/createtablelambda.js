@@ -1,4 +1,4 @@
-//create lambda function to create table in Aurora serverless database environment postgresql CREATE TABLE customer( customer_id INT GENERATED ALWAYS AS IDENTITY, customer_name VARCHAR(255) NOT NULL, customer_city varchar(255), customer_phone integer, customer_email varchar(255) NOT NULL, PRIMARY KEY(customer_id));
+//Delete at the end of the day
 const pg = require("pg");
 const AWS = require("aws-sdk");
 

@@ -1,3 +1,4 @@
+//Lambda ok ja testit ok 30.8.
 const dotenv = require("dotenv").config();
 const { Pool } = require("pg");
 const pool = new Pool({ connectionString: process.env.DB_CONNECTIONSTRING });
