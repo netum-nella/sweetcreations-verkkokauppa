@@ -263,8 +263,6 @@ Resources:
         S3Key: nodejs.zip
       CompatibleRuntimes:
         - nodejs16.x
-
-
 Outputs:
   WebEndpoint:
     Description: "API Gateway endpoint URL for Prod stage"
