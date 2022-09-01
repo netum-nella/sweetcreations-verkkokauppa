@@ -1,27 +1,14 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Description: >-
   Sweet
-
 Transform:
   - AWS::Serverless-2016-10-31
-
-# Parameters:
-#   GithubRepository:
-#     Type: String
-#     Description: "Sweet repository: https://github.com/nellarosaliina/frontend-fullstack.git"
-#     Default: "https://github.com/nellarosaliina/frontend-fullstack.git"
-#   Stage:
-#     Type: String
-#     Description: Deployment stage
-#     Default: "Prod"
-
 Globals:
   Api:
     Cors:
       AllowMethods: "'GET,HEAD,OPTIONS,POST,PUT'"
       AllowHeaders: "'Access-Control-Allow-Headers, Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method, Access-Control-Request-Headers, Access-Control-Allow-Methods, Access-Control-Allow-Origin'"
       AllowOrigin: "'http://sweety-bucket.s3-website.us-east-2.amazonaws.com'"
-
 Resources:
   SweetVPC:
     Type: AWS::EC2::VPC
@@ -277,46 +264,6 @@ Resources:
       CompatibleRuntimes:
         - nodejs16.x
 
-  # AmplifyApp:
-  #
-  #   Type: AWS::Amplify::App
-  #   Properties:
-  #     Name: sweet-amplify-sam-app
-  #     Repository: !Ref GithubRepository
-  #     AccessToken: "{{resolve:secretsmanager:github-token1}}"
-  #     IAMServiceRole: !GetAtt AmplifyRole.Arn
-  #     EnvironmentVariables:
-  #       - Name: ENDPOINT
-  #         Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
-  #         # API GateWay Endpoint, CHECK IF ERRORS!
-
-  # AmplifyBranch:
-  #   Type: AWS::Amplify::Branch
-  #   Properties:
-  #     BranchName: "main"
-  #     AppId: !GetAtt AmplifyApp.AppId
-  #     EnableAutoBuild: true
-
-  # AmplifyRole:
-  #   Type: AWS::IAM::Role
-  #   Properties:
-  #     AssumeRolePolicyDocument:
-  #       Version: 2012-10-17
-  #       Statement:
-  #         - Effect: Allow
-  #           Principal:
-  #             Service:
-  #               - amplify.amazonaws.com
-  #           Action:
-  #             - sts:AssumeRole
-  #     Policies:
-  #       - PolicyName: Amplify
-  #         PolicyDocument:
-  #           Version: 2012-10-17
-  #           Statement:
-  #             - Effect: Allow
-  #               Action: "amplify:*"
-  #               Resource: "*"
 
 Outputs:
   WebEndpoint:
